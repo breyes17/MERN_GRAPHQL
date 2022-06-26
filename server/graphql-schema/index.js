@@ -22,10 +22,19 @@ const ClientType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
+    // return all clients
     clients: {
       type: new GraphQLList(ClientType),
-      resolve(parent, args) {
+      resolve: (parent, args) => {
         return clientModel.find();
+      },
+    },
+    // return single client
+    client: {
+      type: ClientType,
+      args: { id: { type: GraphQLID } },
+      resolve: (parents, args) => {
+        return clientModel.findById(args.id);
       },
     },
   },
@@ -34,6 +43,7 @@ const RootQuery = new GraphQLObjectType({
 const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    // add client
     addClient: {
       type: ClientType,
       args: {
@@ -41,7 +51,7 @@ const mutation = new GraphQLObjectType({
         email: { type: GraphQLNonNull(GraphQLString) },
         age: { type: GraphQLNonNull(GraphQLInt) },
       },
-      resolve(parents, args) {
+      resolve: (parents, args) => {
         const client = new clientModel({
           name: args.name,
           email: args.email,
@@ -49,6 +59,34 @@ const mutation = new GraphQLObjectType({
         });
 
         return client.save();
+      },
+    },
+    // update client
+    updateClient: {
+      type: ClientType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLString },
+        email: { type: GraphQLString },
+        age: { type: GraphQLInt },
+      },
+      resolve: (parents, args) => {
+        const { id, name, email, age } = args;
+        return clientModel.findByIdAndUpdate(
+          id,
+          { $set: { name, email, age } },
+          { new: true }
+        );
+      },
+    },
+    // delete a client
+    deleteClient: {
+      type: ClientType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+      },
+      resolve: (parents, args) => {
+        return clientModel.findByIdAndRemove(args.id);
       },
     },
   },
