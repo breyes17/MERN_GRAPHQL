@@ -30,6 +30,7 @@ function App() {
               <th>Name</th>
               <th>Email</th>
               <th>Age</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
