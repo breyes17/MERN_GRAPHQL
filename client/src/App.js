@@ -25,7 +25,11 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Nav />
+
       <div className="container mt-5">
+        <button type="button" className="btn btn-dark mb-3 pl-0">
+          Add new client
+        </button>
         <div className="row">
           <Table />
         </div>

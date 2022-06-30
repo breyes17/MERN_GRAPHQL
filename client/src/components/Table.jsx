@@ -21,6 +21,16 @@ const Table = () => {
         </div>
       );
     }
+
+    const tableRow = data.length ? (data.clients.map((client) => (
+        <TableRow
+          name={client.name}
+          email={client.email}
+          age={client.age}
+          id={client.id}
+          key={client.id}
+        />
+      ))): (<tr><td colspan='4'><p className='text-center mb-0'>No data available.</p></td></tr>)
   
   return (
     <table className="table table-striped">
@@ -33,15 +43,7 @@ const Table = () => {
       </tr>
     </thead>
     <tbody>
-      {data.clients.map((client) => (
-        <TableRow
-          name={client.name}
-          email={client.email}
-          age={client.age}
-          id={client.id}
-          key={client.id}
-        />
-      ))}
+      {tableRow}
     </tbody>
   </table>
   )
