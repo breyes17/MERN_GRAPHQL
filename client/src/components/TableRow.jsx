@@ -6,7 +6,18 @@ import { GET_CLIENTS } from '../context/queries/clients';
 const TableRow = ({ name, email, age, id }) => {
   const [Delete_Client, { error }] = useMutation(DELETE_CLIENT, {
     variables: { id },
-    refetchQueries: [{ query: GET_CLIENTS }],
+    // refetchQueries: [{ query: GET_CLIENTS }],
+    update(cache, { data: { deleteClient } }) {
+      const { clients } = cache.readQuery({ query: GET_CLIENTS });
+
+      const freshClients = clients.filter(
+        (client) => client.id !== deleteClient.id
+      );
+      cache.writeQuery({
+        query: GET_CLIENTS,
+        data: { clients: freshClients },
+      });
+    },
   });
 
   if (error) alert('Something went wrong');

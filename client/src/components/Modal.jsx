@@ -13,7 +13,14 @@ const Modal = () => {
       email: formData.email,
       age: parseInt(formData.age, 10),
     },
-    refetchQueries: [{ query: GET_CLIENTS }],
+    update(cache, { data: { addClient } }) {
+      const { clients } = cache.readQuery({ query: GET_CLIENTS });
+
+      cache.writeQuery({
+        query: GET_CLIENTS,
+        data: { clients: [...clients, addClient] },
+      });
+    },
   });
 
   const onSubmit = async () => {
