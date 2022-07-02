@@ -7,3 +7,14 @@ export const DELETE_CLIENT = gql`
     }
   }
 `;
+
+export const ADD_CLIENT = gql`
+  mutation Add_Client($name: String!, $email: String!, $age: Int!) {
+    addClient(name: $name, email: $email, age: $age) {
+      name
+      email
+      age
+      id
+    }
+  }
+`;

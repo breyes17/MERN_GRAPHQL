@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import Table from './components/Table';
 import Nav from './components/Nav';
+import Modal from './components/Modal';
 
 const cache = new InMemoryCache({
   typePolicies: {
@@ -27,9 +28,7 @@ function App() {
       <Nav />
 
       <div className="container mt-5">
-        <button type="button" className="btn btn-dark mb-3 pl-0">
-          Add new client
-        </button>
+        <Modal />
         <div className="row">
           <Table />
         </div>
