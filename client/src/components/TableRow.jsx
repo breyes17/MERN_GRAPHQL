@@ -2,6 +2,7 @@ import React from 'react';
 import { useMutation } from '@apollo/client';
 import { DELETE_CLIENT } from '../context/mutation/clients';
 import { GET_CLIENTS } from '../context/queries/clients';
+import Modal from './Modal';
 
 const TableRow = ({ name, email, age, id }) => {
   const [Delete_Client, { error }] = useMutation(DELETE_CLIENT, {
@@ -32,15 +33,13 @@ const TableRow = ({ name, email, age, id }) => {
           className="btn btn-danger me-1"
           onClick={Delete_Client}
         >
-          <i class="bi bi-trash"></i>
+          <i className="bi bi-trash"></i>
         </button>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={Delete_Client}
-        >
-          <i class="bi bi-pencil-square"></i>
-        </button>
+        <Modal
+          primaryButtonLabel={<i className="bi bi-pencil-square"></i>}
+          primaryButtonClass="btn btn-primary"
+          clientProp={{ name, email, age, id }}
+        />
       </td>
     </tr>
   );

@@ -3,11 +3,16 @@ import { useMutation } from '@apollo/client';
 import { ADD_CLIENT } from '../context/mutation/clients';
 import { GET_CLIENTS } from '../context/queries/clients';
 
-const defaultValue = { name: '', email: '', age: 0 };
+const defaultValue = { name: '', email: '', age: 0, id: '' };
 
-const Modal = () => {
-  const [formData, setFormData] = useState(defaultValue);
+const Modal = ({
+  primaryButtonLabel,
+  primaryButtonClass,
+  clientProp = defaultValue,
+}) => {
+  const [formData, setFormData] = useState(clientProp);
   const [isError, setIsError] = useState(false);
+  const [isAdd, setIsAdd] = useState(true);
   const [Add_Client, { error }] = useMutation(ADD_CLIENT, {
     variables: {
       name: formData.name,
@@ -25,10 +30,14 @@ const Modal = () => {
   });
 
   useEffect(() => {
-    if (error) {
-      setIsError(true);
+    if (formData.name !== '') {
+      setIsAdd(false);
     }
-  }, [setIsError, error]);
+  }, []);
+
+  if (error) {
+    setIsError(true);
+  }
 
   const onCancel = () => {
     setIsError(false);
@@ -54,11 +63,11 @@ const Modal = () => {
     <>
       <button
         type="button"
-        className="btn btn-dark mb-3 pl-0"
+        className={primaryButtonClass}
         data-bs-toggle="modal"
         data-bs-target="#clientModal"
       >
-        Add client
+        {primaryButtonLabel}
       </button>
 
       <div
@@ -71,7 +80,7 @@ const Modal = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="clientModalLabel">
-                Add client
+                {isAdd ? 'Add' : 'Edit'} client
               </h5>
               <button
                 type="button"
