@@ -28,14 +28,7 @@ function App() {
       <Nav />
 
       <div className="container mt-5">
-        <Modal
-          primaryButtonLabel={
-            <>
-              <i className="bi bi-person-plus"></i> Add client
-            </>
-          }
-          primaryButtonClass="btn btn-dark mb-3"
-        />
+        <Modal />
         <div className="row">
           <Table />
         </div>

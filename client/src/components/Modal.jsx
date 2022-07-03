@@ -5,14 +5,9 @@ import { GET_CLIENTS } from '../context/queries/clients';
 
 const defaultValue = { name: '', email: '', age: 0, id: '' };
 
-const Modal = ({
-  primaryButtonLabel,
-  primaryButtonClass,
-  clientProp = defaultValue,
-}) => {
-  const [formData, setFormData] = useState(clientProp);
+const Modal = () => {
+  const [formData, setFormData] = useState(defaultValue);
   const [isError, setIsError] = useState(false);
-  const [isAdd, setIsAdd] = useState(true);
   const [Add_Client, { error }] = useMutation(ADD_CLIENT, {
     variables: {
       name: formData.name,
@@ -30,18 +25,15 @@ const Modal = ({
   });
 
   useEffect(() => {
-    if (formData.name !== '') {
-      setIsAdd(false);
+    if (error) {
+      setIsError(true);
     }
-  }, []);
-
-  if (error) {
-    setIsError(true);
-  }
+  }, [setIsError, error]);
 
   const onCancel = () => {
     setIsError(false);
   };
+
   const onSubmit = () => {
     if (!formData.name || !formData.email || !formData.age) return;
 
@@ -63,11 +55,11 @@ const Modal = ({
     <>
       <button
         type="button"
-        className={primaryButtonClass}
+        className="btn btn-dark mb-3"
         data-bs-toggle="modal"
         data-bs-target="#clientModal"
       >
-        {primaryButtonLabel}
+        <i className="bi bi-person-plus"></i> Add client
       </button>
 
       <div
@@ -80,7 +72,7 @@ const Modal = ({
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="clientModalLabel">
-                {isAdd ? 'Add' : 'Edit'} client
+                Add client
               </h5>
               <button
                 type="button"
