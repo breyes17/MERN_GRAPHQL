@@ -6,7 +6,6 @@ import { GET_CLIENTS } from '../context/queries/clients';
 const TableRow = ({ name, email, age, id }) => {
   const [Delete_Client, { error }] = useMutation(DELETE_CLIENT, {
     variables: { id },
-    // refetchQueries: [{ query: GET_CLIENTS }],
     update(cache, { data: { deleteClient } }) {
       const { clients } = cache.readQuery({ query: GET_CLIENTS });
 
@@ -30,10 +29,17 @@ const TableRow = ({ name, email, age, id }) => {
       <td>
         <button
           type="button"
-          className="btn btn-danger"
+          className="btn btn-danger me-1"
           onClick={Delete_Client}
         >
-          Delete
+          <i class="bi bi-trash"></i>
+        </button>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={Delete_Client}
+        >
+          <i class="bi bi-pencil-square"></i>
         </button>
       </td>
     </tr>

@@ -7,13 +7,14 @@ const defaultValue = { name: '', email: '', age: 0 };
 
 const Modal = () => {
   const [formData, setFormData] = useState(defaultValue);
-  const [Add_Client] = useMutation(ADD_CLIENT, {
+  const [isError, setIsError] = useState(false);
+  const [Add_Client, { error }] = useMutation(ADD_CLIENT, {
     variables: {
       name: formData.name,
       email: formData.email,
       age: parseInt(formData.age, 10),
     },
-    update(cache, { data: { addClient }, errors }) {
+    update(cache, { data: { addClient } }) {
       const { clients } = cache.readQuery({ query: GET_CLIENTS });
 
       cache.writeQuery({
@@ -23,17 +24,31 @@ const Modal = () => {
     },
   });
 
+  useEffect(() => {
+    if (error) {
+      setIsError(true);
+    }
+  }, [setIsError, error]);
+
+  const onCancel = () => {
+    setIsError(false);
+  };
   const onSubmit = () => {
     if (!formData.name || !formData.email || !formData.age) return;
 
-    try {
-      Add_Client();
-    } catch (e) {
-      console.log(e);
-    }
+    Add_Client();
 
     setFormData(defaultValue);
   };
+
+  const showError =
+    error && isError ? (
+      <div className="alert alert-danger mt-3" role="alert">
+        {error.message}
+      </div>
+    ) : (
+      <></>
+    );
 
   return (
     <>
@@ -63,9 +78,11 @@ const Modal = () => {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={onCancel}
               ></button>
             </div>
             <div className="modal-body">
+              {showError}
               <div className="mb-3">
                 <label htmlFor="name" className="form-label">
                   Name
@@ -126,6 +143,7 @@ const Modal = () => {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
+                onClick={onCancel}
               >
                 Close
               </button>
