@@ -8,6 +8,7 @@ const {
   GraphQLID,
 } = require('graphql');
 const clientModel = require('../model/client');
+const { MSG } = require('../config/constant');
 
 const ClientType = new GraphQLObjectType({
   name: 'Client',
@@ -51,7 +52,13 @@ const mutation = new GraphQLObjectType({
         email: { type: GraphQLNonNull(GraphQLString) },
         age: { type: GraphQLNonNull(GraphQLInt) },
       },
-      resolve: (parents, args) => {
+      resolve: async (parents, args) => {
+        const isExist = await clientModel.find({ email: args.email });
+
+        if (isExist.length) {
+          throw new Error(MSG.CLIENT_ALREADY_EXIST);
+        }
+
         const client = new clientModel({
           name: args.name,
           email: args.email,

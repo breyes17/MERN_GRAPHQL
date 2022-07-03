@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADD_CLIENT } from '../context/mutation/clients';
 import { GET_CLIENTS } from '../context/queries/clients';
@@ -7,13 +7,13 @@ const defaultValue = { name: '', email: '', age: 0 };
 
 const Modal = () => {
   const [formData, setFormData] = useState(defaultValue);
-  const [Add_Client, { error }] = useMutation(ADD_CLIENT, {
+  const [Add_Client] = useMutation(ADD_CLIENT, {
     variables: {
       name: formData.name,
       email: formData.email,
       age: parseInt(formData.age, 10),
     },
-    update(cache, { data: { addClient } }) {
+    update(cache, { data: { addClient }, errors }) {
       const { clients } = cache.readQuery({ query: GET_CLIENTS });
 
       cache.writeQuery({
@@ -23,13 +23,14 @@ const Modal = () => {
     },
   });
 
-  const onSubmit = async () => {
+  const onSubmit = () => {
     if (!formData.name || !formData.email || !formData.age) return;
 
-    const response = await Add_Client();
-    if (error)
-      alert(`Something wrong while adding a client ${JSON.stringify(error)}`);
-    console.log(response);
+    try {
+      Add_Client();
+    } catch (e) {
+      console.log(e);
+    }
 
     setFormData(defaultValue);
   };
