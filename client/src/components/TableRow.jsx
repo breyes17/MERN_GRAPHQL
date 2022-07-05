@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { DELETE_CLIENT, UPDATE_CLIENT } from '../context/mutation/clients';
 import { GET_CLIENTS } from '../context/queries/clients';
@@ -98,7 +98,7 @@ const TableRow = ({ name, email, age, id }) => {
         {isEdit ? (
           <input
             className="form-control"
-            type="text"
+            type="number"
             value={formData.age}
             onChange={(e) =>
               setFormData((oldData) => ({ ...oldData, age: e.target.value }))
