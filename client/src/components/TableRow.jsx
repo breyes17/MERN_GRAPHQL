@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useMutation } from '@apollo/client';
-import { DELETE_CLIENT } from '../context/mutation/clients';
+import { DELETE_CLIENT, UPDATE_CLIENT } from '../context/mutation/clients';
 import { GET_CLIENTS } from '../context/queries/clients';
 
 const TableRow = ({ name, email, age, id }) => {
@@ -27,7 +27,41 @@ const TableRow = ({ name, email, age, id }) => {
     },
   });
 
-  if (error) alert('Something went wrong');
+  const [Update_Client] = useMutation(UPDATE_CLIENT, {
+    variables: {
+      id: formData.id,
+      name: formData.name,
+      email: formData.email,
+      age: parseInt(formData.age, 10),
+    },
+    update(cache, { data: { updateClient } }) {
+      const { clients } = cache.readQuery({ query: GET_CLIENTS });
+
+      const updatedClient = clients.map((client) => {
+        if (client.id === updateClient.id) {
+          client = { ...updateClient };
+        }
+        return client;
+      });
+
+      cache.writeQuery({
+        query: GET_CLIENTS,
+        data: { clients: updatedClient },
+      });
+    },
+  });
+
+  if (error) alert('Something went wrong while deleting a row');
+
+  const handleOnEdit = () => {
+    if (!isEdit) {
+      setIsEdit((oldVal) => !oldVal);
+      return;
+    }
+
+    Update_Client();
+    setIsEdit((oldVal) => !oldVal);
+  };
 
   return (
     <tr>
@@ -45,8 +79,35 @@ const TableRow = ({ name, email, age, id }) => {
           name
         )}
       </td>
-      <td>{email}</td>
-      <td>{age}</td>
+      <td>
+        {' '}
+        {isEdit ? (
+          <input
+            className="form-control"
+            type="text"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData((oldData) => ({ ...oldData, email: e.target.value }))
+            }
+          />
+        ) : (
+          email
+        )}
+      </td>
+      <td>
+        {isEdit ? (
+          <input
+            className="form-control"
+            type="text"
+            value={formData.age}
+            onChange={(e) =>
+              setFormData((oldData) => ({ ...oldData, age: e.target.value }))
+            }
+          />
+        ) : (
+          age
+        )}
+      </td>
       <td>
         <button
           type="button"
@@ -59,7 +120,7 @@ const TableRow = ({ name, email, age, id }) => {
         <button
           type="button"
           className="btn btn-primary me-1"
-          onClick={() => setIsEdit((prevVal) => !prevVal)}
+          onClick={handleOnEdit}
         >
           {isEdit ? (
             <i className="bi bi-person-check"></i>

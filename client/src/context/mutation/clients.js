@@ -19,3 +19,19 @@ export const ADD_CLIENT = gql`
     }
   }
 `;
+
+export const UPDATE_CLIENT = gql`
+  mutation Update_Client(
+    $id: ID!
+    $name: String!
+    $email: String!
+    $age: Int!
+  ) {
+    updateClient(id: $id, name: $name, email: $email, age: $age) {
+      id
+      name
+      email
+      age
+    }
+  }
+`;
